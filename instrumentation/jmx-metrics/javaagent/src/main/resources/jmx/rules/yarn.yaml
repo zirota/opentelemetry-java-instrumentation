@@ -1,0 +1,488 @@
+---
+rules:
+  - bean: Hadoop:service=ResourceManager,name=ClusterMetrics
+    unit: "1"
+    type: updowncounter
+    prefix: yarn.cluster_metrics.
+    metricAttribute:
+      node_name: param(tag.Hostname)
+    mapping:
+      NumActiveNMs:
+        unit: '{node_managers}'
+        desc: Current number of active NodeManagers
+      NumDecommissionedNMs:
+        type: counter
+        unit: '{node_managers}'
+        desc: Current number of decommissioned NodeManagers
+      NumShutdownNMs:
+        type: counter
+        unit: '{node_managers}'
+        desc: Current number of NodeManagers shut down gracefully. Note that this does not count NodeManagers that are forcefully killed.
+      NumLostNMs:
+        unit: '{node_managers}'
+        desc: Current number of lost NodeManagers for not sending heartbeats.
+      NumUnhealthyNMs:
+        type: updowncounter
+        unit: '{node_managers}'
+        desc: Current number of unhealthy NodeManagers
+      NumRebootedNMs:
+        type: counter
+        unit: '{node_managers}'
+        desc: Current number of rebooted NodeManagers
+      AMLaunchDelayNumOps:
+        type: counter
+        desc: Total number of AMs launched
+      AMLaunchDelayAvgTime:
+        type: gauge
+        unit: ms
+        desc: Average time in milliseconds RM spends to launch AM containers after the AM container is allocated
+      AMRegisterDelayNumOps:
+        type: counter
+        desc: Total number of AMs registered
+      AMRegisterDelayAvgTime:
+        type: gauge
+        unit: ms
+        desc: Average time in milliseconds AM spends to register with RM after the AM container gets launched
+
+  - beans: 
+      - Hadoop:service=ResourceManager,name=QueueMetrics
+      - Hadoop:service=ResourceManager,name=QueueMetrics,q0=*
+      - Hadoop:service=ResourceManager,name=QueueMetrics,q0=*,q1=*
+      - Hadoop:service=ResourceManager,name=QueueMetrics,q0=*,q1=*,q2=*
+    type: gauge
+    unit: "1"
+    prefix: yarn.queue_metrics.
+    metricAttribute:
+      node_name: param(tag.Hostname)
+      queue_name: param(tag.Queuename)
+    mapping:
+      running_0:
+        type: updowncounter
+        unit: '{applications}'
+        desc: Current number of running applications whose elapsed time are less than 60 minutes
+      running_60:
+        type: updowncounter
+        unit: '{applications}'
+        desc: Current number of running applications whose elapsed time are between 60 and 300 minutes
+      running_300:
+        type: updowncounter
+        unit: '{applications}'
+        desc: Current number of running applications whose elapsed time are between 300 and 1440 minutes
+      running_1440:
+        type: updowncounter
+        unit: '{applications}'
+        desc: Current number of running applications elapsed time are more than 1440 minutes
+      AMResourceLimitMB:
+        unit: MB
+      AMResourceLimitVCores:
+        unit: '{vcores}'
+      UsedAMResourceMB:
+        type: counter
+        unit: MB
+      UsedAMResourceVCores:
+        type: counter
+        unit: '{vcores}'
+      UsedCapacity:
+      AbsoluteUsedCapacity:
+        type: counter
+      GuaranteedMB:
+        unit: MB
+      GuaranteedVCores:
+        unit: '{vcores}'
+      MaxCapacityMB:
+        unit: MB
+      MaxCapacityVCores:
+        unit: '{vcores}'
+      GuaranteedCapacity:
+      GuaranteedAbsoluteCapacity:
+      MaxCapacity:
+      MaxAbsoluteCapacity:
+      AppsSubmitted:
+        type: counter
+        unit: '{applications}'
+        desc: Total number of submitted applications
+      AppsRunning:
+        unit: '{applications}'
+        desc: Current number of running applications
+      AppsPending:
+        unit: '{applications}'
+        desc: Current number of applications that have not yet been assigned by any containers
+      AppsCompleted:
+        type: counter
+        unit: '{applications}'
+        desc: Total number of completed applications
+      AppsKilled:
+        type: counter
+        unit: '{applications}'
+        desc: Total number of killed applications
+      AppsFailed:
+        type: counter
+        unit: '{applications}'
+        desc: Total number of failed applications
+      AllocatedMB:
+        type: updowncounter
+        unit: MB
+        desc: Current allocated memory in MB
+      AllocatedVCores:
+        unit: '{vcores}'
+        desc:	Current allocated CPU in virtual cores
+      AllocatedContainers:
+        unit: '{containers}'
+        desc:	Current number of allocated containers
+      AggregateContainersAllocated:
+        type: counter
+        unit: '{containers}'
+        desc: Total number of allocated containers
+      AggregateNodeLocalContainersAllocated:
+        type: counter
+        unit: '{containers}'
+        desc: Total number of node local containers allocated
+      AggregateRackLocalContainersAllocated:
+        type: counter
+        unit: '{containers}'
+        desc: Total number of rack local containers allocated
+      AggregateOffSwitchContainersAllocated:
+        type: counter
+        unit: '{containers}'
+        desc: Total number of off switch containers allocated
+      AggregateContainersReleased:
+        type: counter
+        unit: '{containers}'
+        desc: Total number of released containers
+      AggregateContainersPreempted:
+        unit: '{containers}'
+      AggregateMemoryMBSecondsPreempted:
+      AggregateVcoreSecondsPreempted:
+      AggregateMemoryMBPreempted:
+        unit: MB
+      AggregateVcoresPreempted:
+        unit: '{vcores}'
+      AvailableMB:
+        type: updowncounter
+        unit: MB
+        desc: Current available memory in MB
+      AvailableVCores:
+        type: updowncounter
+        unit: '{vcores}'
+        desc:	Current available CPU in virtual cores
+      PendingMB:
+        unit: MB
+        desc: Current memory requests in MB that are pending to be fulfilled by the scheduler
+      PendingVCores:
+        unit: '{requests}'
+        desc:	Current CPU requests in virtual cores that are pending to be fulfilled by the scheduler
+      PendingContainers:
+        unit: '{containers}'
+        desc:	Current number of containers that are pending to be fulfilled by the scheduler
+      ReservedMB:
+        unit: MB
+        desc: Current reserved memory in MB
+      ReservedVCores:
+        unit: '{vcores}'
+        desc:	Current reserved CPU in virtual cores
+      ReservedContainers:
+        unit: '{containers}'
+        desc:	Current number of reserved containers
+      ActiveUsers:
+        metric: ActiveUsers
+        unit: '{users}'
+        desc:	Current number of active users
+      ActiveApplications:
+        type: updowncounter
+        unit: '{applications}'
+        desc:	Current number of active applications
+      AppAttemptFirstContainerAllocationDelayNumOps:
+        type: counter
+        desc:	Total number of first container allocated for all attempts
+      AppAttemptFirstContainerAllocationDelayAvgTime:
+        type: gauge
+        unit: ms
+        desc: Average time RM spends to allocate the first container for all attempts. For managed AM, the first container is AM container. So, this indicates the time duration to allocate AM container. For unmanaged AM, this is the time duration to allocate the first container asked by unmanaged AM.
+      FairShareMB:
+        unit: MB
+        desc: (FairScheduler only) Current fair share of memory in MB
+      FairShareVCores:
+        unit: '{vcores}'
+        desc:	(FairScheduler only) Current fair share of CPU in virtual cores
+      MinShareMB:
+        unit: MB
+        desc: (FairScheduler only) Minimum share of memory in MB
+      MinShareVCores:
+        unit: '{vcores}'
+        desc:	(FairScheduler only) Minimum share of CPU in virtual cores
+      MaxShareMB:
+        unit: MB
+        desc: (FairScheduler only) Maximum share of memory in MB
+      MaxShareVCores:
+        unit: '{vcores}'
+        desc:	(FairScheduler only) Maximum share of CPU in virtual cores
+
+  - bean: Hadoop:service=NodeManager,name=NodeManagerMetrics
+    unit: '1'
+    prefix: yarn.node_manager_metrics.
+    metricAttribute:
+      node_name: param(tag.Hostname)
+    mapping:
+      ContainersLaunched:
+        type: counter
+        unit: '{containers}'
+        desc:	Total number of launched containers
+      ContainersCompleted:
+        type: counter
+        unit: '{containers}'
+        desc:	Total number of successfully completed containers
+      ContainersFailed:
+        type: counter
+        unit: '{containers}'
+        desc:	Total number of failed containers
+      ContainersKilled:
+        type: counter
+        unit: '{containers}'
+        desc:	Total number of killed containers
+      ContainersRolledBackOnFailure:
+        type: counter
+        unit: '{containers}'
+        desc:	Total number of containers rolled backed on failure
+      ContainersIniting:
+        unit: '{containers}'
+        desc:	Current number of initializing containers
+      ContainersRunning:
+        unit: '{containers}'
+        desc:	Current number of running containers
+      AllocatedContainers:
+        type: gauge
+        unit: '{containers}'
+        desc:	Current number of allocated containers
+      AllocatedGB:
+        type: gauge
+        unit: GB
+        desc:	Current allocated memory in GB
+      AvailableGB:
+        type: gauge
+        unit: GB
+        desc:	Current available memory in GB
+      AllocatedVCores:
+        unit: '{vcores}'
+        desc:	Current used vcores
+      AvailableVCores:
+        unit: '{vcores}'
+        desc:	Current available vcores
+      ContainerLaunchDuration:
+        type: gauge
+        unit: ms
+        desc:	Average time duration in milliseconds NM takes to launch a container
+      ContainerLaunchDurationNumOps:
+        type: counter
+      ContainerLaunchDurationAvgTime:
+        type: gauge
+        unit: ms
+        desc:	Average time duration in milliseconds NM takes to launch a container
+      BadLocalDirs:
+        unit: '{directories}'
+        desc:	Current number of bad local directories. Currently, a disk that cannot be read/written/executed by NM process or A disk being full is considered as bad.
+      BadLogDirs:
+        unit: '{directories}'
+        desc:	Current number of bad log directories. Currently, a disk that cannot be read/written/executed by NM process or A disk being full is considered as bad.
+      GoodLocalDirsDiskUtilizationPerc:
+        type: gauge
+        unit: '%'
+        desc:	Current disk utilization percentage across all good local directories
+      GoodLogDirsDiskUtilizationPerc:
+        type: gauge
+        unit: '%'
+        desc:	Current disk utilization percentage across all good log directories
+      AllocatedOpportunisticGB:
+        type: gauge
+        unit: GB
+      AllocatedOpportunisticVCores:
+        type: gauge
+        unit: '{vcores}'
+      RunningOpportunisticContainers:
+        type: updowncounter
+      CacheSizeBeforeClean:
+        type: updowncounter
+        unit: By
+      TotalBytesDeleted:
+        type: updowncounter
+        unit: By
+      PublicBytesDeleted:
+        type: updowncounter
+        unit: By
+      PrivateBytesDeleted:
+        type: updowncounter
+        unit: By
+      ContainerUsedMemGB:
+        type: updowncounter
+        unit: GB
+      ContainerUsedVMemGB:
+        type: updowncounter
+        unit: GB
+      ContainerCpuUtilization:
+        type: gauge
+      NodeUsedMemGB:
+        type: updowncounter
+        unit: GB
+      NodeUsedVMemGB:
+        type: updowncounter
+        unit: GB
+      NodeCpuUtilization:
+        type: gauge
+
+  - bean: Hadoop:service=NodeManager,name=ContainerMetrics
+    unit: '1'
+    type: updowncounter
+    prefix: yarn.container_metrics.
+    metricAttribute:
+      node_name: param(tag.Hostname)
+      countainer_pid: param(tag.ContainerPid)
+    mapping:
+      pMemLimitMBs:
+        unit: MB
+        desc: Physical memory limit of the container in MB
+      vMemLimitMBs:
+        unit: MB
+        desc:	Virtual memory limit of the container in MB
+      vCoreLimit:
+        unit: '{vcores}'
+        desc:	CPU limit of the container in number of vcores
+      launchDurationMs:
+        unit: ms
+        desc:	Container launch duration in msec
+      localizationDurationMs:
+        unit: ms
+        desc:	Container localization duration in msec
+      StartTime:
+        unit: ms
+        desc:	Time in msec when container starts
+      FinishTime:
+        unit: ms
+        desc:	Time in msec when container finishes
+      ExitCode:
+        desc:	Container’s exit code
+      PMemUsageMBsNumUsage:
+        unit: MB
+        desc:	Total number of physical memory used metrics
+      PMemUsageMBsAvgMBs:
+        unit: MB
+        desc:	Average physical memory used in MB
+      PMemUsageMBsStdevMBs:
+        unit: MB
+        desc:	Standard deviation of the physical memory used in MB
+      PMemUsageMBsMinMBs:
+        unit: MB
+        desc:	Minimum physical memory used in MB
+      PMemUsageMBsMaxMBs:
+        unit: MB
+        desc:	Maximum physical memory used in MB
+      PMemUsageMBsIMinMBs:
+        unit: MB
+        desc:	Minimum physical memory used in MB of current interval (the time of interval is specified by yarn.nodemanager.container-metrics.period-ms)
+      PMemUsageMBsIMaxMBs:
+        unit: MB
+        desc:	Maximum physical memory used in MB of current interval (the time of interval is specified by yarn.nodemanager.container-metrics.period-ms)
+      PMemUsageMBsINumUsage:
+        unit: MB
+        desc:	Total number of physical memory used metrics in current interval (the time of interval is specified by yarn.nodemanager.container-metrics.period-ms)
+      PCpuUsagePercentNumUsage:
+        type: gauge
+        unit: '%'
+        desc:	Total number of physical CPU cores percent used metrics
+      PCpuUsagePercentAvgPercents:
+        type: gauge
+        unit: '%'
+        desc:	Average physical CPU cores percent used
+      PCpuUsagePercentStdevPercents:
+        type: gauge
+        unit: '%'
+        desc:	Standard deviation of physical CPU cores percent used
+      PCpuUsagePercentMinPercents:
+        type: gauge
+        unit: '%'
+        desc:	Minimum physical CPU cores percent used
+      PCpuUsagePercentMaxPercents:
+        type: gauge
+        unit: '%'
+        desc:	Maximum physical CPU cores percent used
+      PCpuUsagePercentIMinPercents:
+        type: gauge
+        unit: '%'
+        desc:	Minimum physical CPU cores percent used in current interval (the time of interval is specified by yarn.nodemanager.container-metrics.period-ms)
+      PCpuUsagePercentIMaxPercents:
+        type: gauge
+        unit: '%'
+        desc:	Maximum physical CPU cores percent used in current interval (the time of interval is specified by yarn.nodemanager.container-metrics.period-ms)
+      PCpuUsagePercentINumUsage:
+        type: gauge
+        unit: '%'
+        desc:	Total number of physical CPU cores used metrics in current interval (the time of interval is specified by yarn.nodemanager.container-metrics.period-ms)
+      MilliVcoreUsageNumUsage:
+        unit: '{vcores}'
+        desc:	Total number of vcores used metrics
+      MilliVcoreUsageAvgMilliVcores:
+        unit: '{vcores}'
+        desc:	1000 times the average vcores used
+      MilliVcoreUsageStdevMilliVcores:
+        unit: '{vcores}'
+        desc:	1000 times the standard deviation of vcores used
+      MilliVcoreUsageMinMilliVcores:
+        unit: '{vcores}'
+        desc:	1000 times the minimum vcores used
+      MilliVcoreUsageMaxMilliVcores:
+        unit: '{vcores}'
+        desc:	1000 times the maximum vcores used
+      MilliVcoreUsageIMinMilliVcores:
+        unit: '{vcores}'
+        desc:	1000 times the average vcores used in current interval (the time of interval is specified by yarn.nodemanager.container-metrics.period-ms)
+      MilliVcoreUsageIMaxMilliVcores:
+        unit: '{vcores}'
+        desc:	1000 times the maximum vcores used in current interval (the time of interval is specified by yarn.nodemanager.container-metrics.period-ms)
+      MilliVcoreUsageINumUsage:
+        unit: '{vcores}'
+        desc:	Total number of vcores used metrics in current interval (the time of interval is specified by yarn.nodemanager.container-metrics.period-ms)
+      PMemUsageMBHistogramNumUsage:
+        unit: MB
+        desc:	Total number of physical memory used metrics (1 second granularity)
+      PMemUsageMBHistogram50thPercentileMBs:
+        type: gauge
+        unit: MB
+        desc:	The 50th percentile of physical memory used in MB (1 second granularity)
+      PMemUsageMBHistogram75thPercentileMBs:
+        type: gauge
+        unit: MB
+        desc:	The 75th percentile of physical memory used in MB (1 second granularity)
+      PMemUsageMBHistogram90thPercentileMBs:
+        type: gauge
+        unit: MB
+        desc:	The 90th percentile of physical memory used in MB (1 second granularity)
+      PMemUsageMBHistogram95thPercentileMBs:
+        type: gauge
+        unit: MB
+        desc:	The 95th percentile of physical memory used in MB (1 second granularity)
+      PMemUsageMBHistogram99thPercentileMBs:
+        type: gauge
+        unit: MB
+        desc:	The 99th percentile of physical memory used in MB (1 second granularity)
+      PCpuUsagePercentHistogramNumUsage:
+        unit: '{cores}'
+        desc:	Total number of physical CPU cores used metrics (1 second granularity)
+      PCpuUsagePercentHistogram50thPercentilePercents:
+        type: gauge
+        unit: '%'
+        desc:	The 50th percentile of physical CPU cores percent used (1 second granularity)
+      PCpuUsagePercentHistogram75thPercentilePercents:
+        type: gauge
+        unit: '%'
+        desc:	The 75th percentile of physical CPU cores percent used (1 second granularity)
+      PCpuUsagePercentHistogram90thPercentilePercents:
+        type: gauge
+        unit: '%'
+        desc:	The 90th percentile of physical CPU cores percent used (1 second granularity)
+      PCpuUsagePercentHistogram95thPercentilePercents:
+        type: gauge
+        unit: '%'
+        desc:	The 95th percentile of physical CPU cores percent used (1 second granularity)
+      PCpuUsagePercentHistogram99thPercentilePercents:
+        type: gauge
+        unit: '%'
+        desc:	The 99th percentile of physical CPU cores percent used (1 second granularity)
+          
